@@ -71,7 +71,7 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
   };
 
   return (
-    <div className="w-full max-w-[600px] p-4 bg-white rounded-lg shadow-sm">
+    <div className="w-full max-w-[800px] p-4 bg-white rounded-lg shadow-sm">
       <form onSubmit={handleSubmit} className="flex flex-col gap-2">
         <Input
           value={goal}

@@ -21,7 +21,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       messages: [
         {
           role: "system",
-          content: "You are a helpful assistant that generates a list of todo items based on a given goal. Provide a numbered list of 5-10 actionable tasks.",
+          content: `Create work back time line accomplish the goal. Break up goal into detailed smaller actionable tasks and subtasks. Use SMART (Specific, Measurable, Achievable, Relevant, Time-bound) goals framework to guide you in creating tasks/subtasks
+          
+          Rules
+          - ensure to start with day 1 
+          - Split into individual days 
+          - Break down the goal into smaller tasks and subtasks
+          - Each task should be specific and measurable
+          - Each task should be achievable and relevant
+          `,
         },
         { role: "user", content: `Generate a todo list for the following goal: ${prompt}` },
       ],
