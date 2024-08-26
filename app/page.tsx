@@ -113,23 +113,13 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start p-24">
-      <h1 className="text-4xl font-bold mb-8">Todo App</h1>
-      <div className="w-full max-w-sm mb-4">
-        <ProgressBar value={userState.progress} className="w-full" />
-        <p className="text-center mt-2">{userState.progress}% completed</p>
-      </div>
-      <div className="flex w-full max-w-sm items-center space-x-2 mb-4">
-        <Input
-          type="text"
-          placeholder="Add a new todo"
-          value={newTodo}
-          onChange={(e) => setNewTodo(e.target.value)}
-          onKeyPress={handleKeyPress}
-        />
-        <Button onClick={addTodo}>Add</Button>
-      </div>
-      <div className="w-full max-w-sm space-y-4">
+    <div className="flex flex-col items-center min-h-screen bg-gray-100 py-8">
+      <div className="w-[600px] bg-white rounded-lg shadow-md p-6">
+        <h1 className="text-3xl font-bold mb-6 text-center">Todo App</h1>
+        <div className="w-full max-w-sm mb-4">
+          <ProgressBar value={userState.progress} className="w-full" />
+          <p className="text-center mt-2">{userState.progress}% completed</p>
+        </div>
         <TodoGenerator onNewTasks={handleNewTasks} />
         <TaskList
           tasks={userState.tasks}
@@ -155,6 +145,6 @@ export default function Home() {
           onReorderTasks={handleReorderTasks}
         />
       </div>
-    </main>
+    </div>
   );
 }

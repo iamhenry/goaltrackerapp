@@ -64,7 +64,7 @@ const Task: React.FC<TaskProps> = ({
 
   return (
     <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
-      <Card>
+      <Card className="mb-2">
         <CardContent className="flex items-center p-4">
           <div className="drag-handle mr-2">☰</div>
           <Checkbox
@@ -75,7 +75,7 @@ const Task: React.FC<TaskProps> = ({
           <Input
             value={task.title}
             onChange={(e) => onEdit({ ...task, title: e.target.value })}
-            className={`flex-grow ${task.completed ? "line-through" : ""}`}
+            className={`flex-grow border-none ${task.completed ? "line-through" : ""}`}
           />
           <Button onClick={onDelete} variant="destructive" className="ml-2">
             Delete
@@ -98,47 +98,7 @@ export async function* generateTodoItems(prompt: string) {
     messages: [
       {
         role: "system",
-        content: `<think_step_by_step>
-Create work back time line for learning to draw cartoons. Break up goal into detailed smaller actionable tasks and subtasks. Use SMART goals framework to guide you in creating tasks/subtasks
-</think_step_by_step>
-
-- ensure to start with day 1 
-- Split into individual days 
-- ensure output format is markdown codeblock as todo items 
-- only output the code. exclude any additional text
-
-# Output Example
-
-### Example 1
-- [ ] **Day 1: Set Up** 
-- [ ] Define personal goals for learning to draw cartoons (SMART: Specific, Measurable, Achievable, Relevant, Time-bound) 
-- [ ] Gather basic drawing supplies (pencils, erasers, sketchbook) 
-- [ ] Create a dedicated drawing workspace 
-
-- [ ] **Day 2: Basic Drawing Skills** 
-- [ ] Watch tutorials on basic drawing techniques (lines, shapes) 
-- [ ] Practice drawing basic shapes (circles, squares, triangles) 
-- [ ] Complete 30-minute practice session focusing on line control 
-
-- [ ] **Day 3: Understanding Cartoon Style** 
-- [ ] Research different cartoon styles (classic, modern, anime) 
-- [ ] Choose a cartoon style to focus on 
-- [ ] Create a mood board with examples of chosen style
-### Example 2
-- [ ] **Day 1: Assess and Plan** 
-- [ ] Research and select a marathon training plan that fits a 14-day timeline 
-- [ ] Set specific milestones for each training day 
-- [ ] Purchase or confirm running gear (shoes, clothes) 
-- [ ] Create a detailed training calendar 
-
-- [ ] **Day 2: Start Training Plan** 
-- [ ] Complete the first workout of the chosen plan (e.g., 3 miles run) 
-- [ ] Measure and record initial statistics (distance, time, pace) 
-- [ ] Set up a running log or app to track progress 
-
-- [ ] **Day 3: Rest or Cross-Training** 
-- [ ] Perform a 30-minute low-impact cross-training activity (e.g., swimming) 
-- [ ] Complete a 15-minute stretching and flexibility routine`,
+        content: `Generate concise answer`,
       },
       { role: "user", content: prompt },
     ],

@@ -21,9 +21,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       messages: [
         {
           role: "system",
-          content: "You are a helpful assistant that generates todo items based on user prompts.",
+          content: "You are a helpful assistant that generates a list of todo items based on a given goal. Provide a numbered list of 5-10 actionable tasks.",
         },
-        { role: "user", content: prompt },
+        { role: "user", content: `Generate a todo list for the following goal: ${prompt}` },
       ],
       model: "llama-3.1-70b-versatile",
       stream: true,

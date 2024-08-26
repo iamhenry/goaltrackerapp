@@ -7,10 +7,13 @@ interface TodoGeneratorProps {
 }
 
 const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
-  const [prompt, setPrompt] = useState("");
+  const [goal, setGoal] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleGenerate = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!goal.trim()) return;
+
     setIsGenerating(true);
     try {
       const response = await fetch("/api/generate-todos", {
@@ -18,7 +21,7 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt: goal }),
       });
 
       if (!response.ok) {
@@ -28,42 +31,59 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       let tasks: string[] = [];
+      let fullResponse = "";
 
       while (true) {
         const { done, value } = await reader!.read();
         if (done) break;
 
         const chunk = decoder.decode(value);
-        const lines = chunk.split("\n");
+        fullResponse += chunk;
 
+        const lines = chunk.split("\n");
         for (const line of lines) {
           if (line.startsWith("data: ")) {
             const content = JSON.parse(line.slice(6));
-            tasks.push(content);
+            fullResponse += content;
           }
         }
       }
 
+      // Process the full response to extract tasks and remove markdown characters
+      tasks = fullResponse
+        .split("\n")
+        .filter((line) => line.trim().match(/^\d+\./))
+        .map((line) =>
+          line
+            .trim()
+            .replace(/^\d+\.\s*/, "")
+            .replace(/\*\*/g, "")
+        );
+
+      console.log("Generated tasks:", tasks);
       onNewTasks(tasks);
     } catch (error) {
       console.error("Error generating todos:", error);
     } finally {
       setIsGenerating(false);
-      setPrompt("");
+      setGoal("");
     }
   };
 
   return (
-    <div className="mb-4">
-      <Input
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Enter a goal and accomplish days"
-        className="mb-2"
-      />
-      <Button onClick={handleGenerate} disabled={isGenerating}>
-        {isGenerating ? "Generating..." : "Create Goal"}
-      </Button>
+    <div className="w-full max-w-[600px] p-4 bg-white rounded-lg shadow-sm">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+        <Input
+          value={goal}
+          onChange={(e) => setGoal(e.target.value)}
+          placeholder="Enter your goal"
+          disabled={isGenerating}
+          className="w-full border border-gray-200 rounded-md"
+        />
+        <Button type="submit" disabled={isGenerating} className="w-full">
+          {isGenerating ? "Generating..." : "Create Todo List"}
+        </Button>
+      </form>
     </div>
   );
 };
