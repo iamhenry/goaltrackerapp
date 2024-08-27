@@ -127,7 +127,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 py-8">
+    <div className="flex justify-center min-h-screen bg-gray-100 py-8">
       <div className="w-[600px] bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-center items-center mb-6">
           {isEditingGoal ? (
@@ -166,7 +166,7 @@ export default function Home() {
             </>
           )}
         </div>
-        <div className="w-full max-w-sm mb-4">
+        <div className="w-full mb-4">
           <ProgressBar value={userState.progress} className="w-full" />
           <p className="text-center mt-2">{userState.progress}% completed</p>
         </div>
