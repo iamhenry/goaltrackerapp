@@ -9,14 +9,18 @@ import { Progress as ProgressBar } from "@/app/components/ui/progress";
 import { TaskType, UserState } from "./types/task";
 import TaskList from "@/app/components/ui/TaskList";
 import TodoGenerator from "@/app/components/TodoGenerator";
+import { Pencil, Save } from "lucide-react"; // Add Save icon
 
 export default function Home() {
   const [userState, setUserState] = useState<UserState>({
     tasks: [],
     progress: 0,
+    goalName: "Todo App", // Add this line
   });
   const [newTodo, setNewTodo] = useState("");
   const [isClient, setIsClient] = useState(false);
+  const [isEditingGoal, setIsEditingGoal] = useState(false); // Add this line
+  const [editedGoalName, setEditedGoalName] = useState(userState.goalName);
 
   useEffect(() => {
     setIsClient(true);
@@ -108,6 +112,16 @@ export default function Home() {
     }));
   };
 
+  const handleGoalNameChange = () => {
+    if (editedGoalName.trim() !== "") {
+      setUserState((prevState) => ({
+        ...prevState,
+        goalName: editedGoalName,
+      }));
+      setIsEditingGoal(false);
+    }
+  };
+
   if (!isClient) {
     return null; // or a loading spinner
   }
@@ -115,7 +129,43 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 py-8">
       <div className="w-[600px] bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-3xl font-bold mb-6 text-center">Todo App</h1>
+        <div className="flex justify-center items-center mb-6">
+          {isEditingGoal ? (
+            <div className="flex items-center">
+              <Input
+                value={editedGoalName}
+                onChange={(e) => setEditedGoalName(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleGoalNameChange();
+                  }
+                }}
+                className="text-3xl font-bold text-center mr-2"
+                autoFocus
+              />
+              <Button variant="ghost" size="sm" onClick={handleGoalNameChange}>
+                <Save size={16} />
+              </Button>
+            </div>
+          ) : (
+            <>
+              <h1 className="text-3xl font-bold text-center">
+                {userState.goalName}
+              </h1>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setEditedGoalName(userState.goalName);
+                  setIsEditingGoal(true);
+                }}
+                className="ml-2"
+              >
+                <Pencil size={16} />
+              </Button>
+            </>
+          )}
+        </div>
         <div className="w-full max-w-sm mb-4">
           <ProgressBar value={userState.progress} className="w-full" />
           <p className="text-center mt-2">{userState.progress}% completed</p>

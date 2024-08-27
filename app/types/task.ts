@@ -9,5 +9,5 @@ export interface TaskType {
 export interface UserState {
   tasks: TaskType[];
   progress: number;
-  // Add any other user-related state here
+  goalName: string;
 }
