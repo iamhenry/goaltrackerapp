@@ -65,7 +65,7 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
       <Input
         value={goal}
         onChange={(e) => setGoal(e.target.value)}
-        placeholder="Enter your goal"
+        placeholder="Enter your goal and due date..."
         disabled={isGenerating}
         className="w-full border border-gray-200 rounded-md"
       />

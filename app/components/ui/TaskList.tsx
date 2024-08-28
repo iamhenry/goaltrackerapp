@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
-import { DndProvider } from "react-dnd";
+import { TaskType } from "@/app/types/task";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Task from "./Task";
-import { TaskType } from "../../types/task";
 
 interface TaskListProps {
   tasks: TaskType[];
@@ -11,6 +11,57 @@ interface TaskListProps {
   onToggleComplete: (id: string) => void;
   onReorderTasks: (newTasks: TaskType[]) => void;
 }
+
+interface DraggableTaskProps {
+  task: TaskType;
+  index: number;
+  moveTask: (dragIndex: number, hoverIndex: number) => void;
+  onEdit: (updatedTask: TaskType) => void;
+  onDelete: () => void;
+  onToggle: () => void;
+}
+
+const DraggableTask: React.FC<DraggableTaskProps> = ({
+  task,
+  index,
+  moveTask,
+  onEdit,
+  onDelete,
+  onToggle,
+}) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: "TASK",
+    item: { index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const [, drop] = useDrop({
+    accept: "TASK",
+    hover(item: { index: number }) {
+      if (item.index !== index) {
+        moveTask(item.index, index);
+        item.index = index;
+      }
+    },
+  });
+
+  return (
+    <div
+      ref={(node) => drag(drop(node))}
+      style={{ opacity: isDragging ? 0.5 : 1 }}
+      className={`mb-2 ${task.title.includes("Day") ? "" : "ml-6"}`}
+    >
+      <Task
+        task={task}
+        onDelete={onDelete}
+        onToggle={onToggle}
+        onEdit={onEdit}
+      />
+    </div>
+  );
+};
 
 const TaskList: React.FC<TaskListProps> = ({
   tasks,
@@ -34,14 +85,14 @@ const TaskList: React.FC<TaskListProps> = ({
     <DndProvider backend={HTML5Backend}>
       <div className="space-y-2">
         {tasks.map((task, index) => (
-          <Task
+          <DraggableTask
             key={task.id}
             task={task}
             index={index}
             moveTask={moveTask}
+            onEdit={(updatedTask) => onEditTask(task.id, updatedTask)}
             onDelete={() => onDeleteTask(task.id)}
             onToggle={() => onToggleComplete(task.id)}
-            onEdit={(updatedTask) => onEditTask(task.id, updatedTask)}
           />
         ))}
       </div>

@@ -1,87 +1,66 @@
-import React, { useRef, useState, useEffect } from "react";
-import { useDrag, useDrop } from "react-dnd";
-import { TaskType } from "../../types/task";
-import { Card, CardContent } from "./card";
+import React, { useState, useRef, useEffect } from "react";
 import { Checkbox } from "./checkbox";
-import { Input } from "./input";
 import { Button } from "./button";
-import Groq from "groq-sdk";
+import { Input } from "./input";
+import { Trash } from "lucide-react";
+import { TaskType } from "@/app/types/task";
 
 interface TaskProps {
   task: TaskType;
-  index: number;
-  moveTask: (dragIndex: number, hoverIndex: number) => void;
-  onEdit: (task: TaskType) => void;
   onDelete: () => void;
   onToggle: () => void;
+  onEdit: (updatedTask: TaskType) => void;
 }
 
-const Task: React.FC<TaskProps> = ({
-  task,
-  index,
-  moveTask,
-  onEdit,
-  onDelete,
-  onToggle,
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
+const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(task.title);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const [{ handlerId }, drop] = useDrop({
-    accept: "task",
-    collect(monitor) {
-      return {
-        handlerId: monitor.getHandlerId(),
-      };
-    },
-    hover(item: { index: number }, monitor) {
-      if (!ref.current) {
-        return;
-      }
-      const dragIndex = item.index;
-      const hoverIndex = index;
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
 
-      if (dragIndex === hoverIndex) {
-        return;
-      }
+  const handleSave = () => {
+    onEdit({ ...task, title: editedTitle });
+    setIsEditing(false);
+  };
 
-      moveTask(dragIndex, hoverIndex);
-      item.index = hoverIndex;
-    },
-  });
-
-  const [{ isDragging }, drag] = useDrag({
-    type: "task",
-    item: () => {
-      return { id: task.id, index };
-    },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  const opacity = isDragging ? 0.4 : 1;
-  drag(drop(ref));
+  const handleClick = () => {
+    if (!task.completed) {
+      setIsEditing(true);
+    }
+  };
 
   return (
-    <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
-      <Card className="mb-2">
-        <CardContent className="flex items-center p-4">
-          <div className="drag-handle mr-2">☰</div>
-          <Checkbox
-            checked={task.completed}
-            onCheckedChange={onToggle}
-            className="mr-4"
-          />
-          <Input
-            value={task.title}
-            onChange={(e) => onEdit({ ...task, title: e.target.value })}
-            className={`flex-grow border-none ${task.completed ? "line-through" : ""}`}
-          />
-          <Button onClick={onDelete} variant="destructive" className="ml-2">
-            Delete
-          </Button>
-        </CardContent>
-      </Card>
+    <div className="flex items-center space-x-2 w-full">
+      <Checkbox checked={task.completed} onCheckedChange={onToggle} />
+      {isEditing ? (
+        <Input
+          ref={inputRef}
+          value={editedTitle}
+          onChange={(e) => setEditedTitle(e.target.value)}
+          onBlur={handleSave}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") handleSave();
+          }}
+          className="flex-grow"
+        />
+      ) : (
+        <span
+          className={`flex-grow cursor-pointer ${
+            task.completed ? "line-through" : ""
+          }`}
+          onClick={handleClick}
+        >
+          {task.title}
+        </span>
+      )}
+      <Button variant="ghost" size="sm" onClick={onDelete}>
+        <Trash size={16} />
+      </Button>
     </div>
   );
 };

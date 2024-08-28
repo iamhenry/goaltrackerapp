@@ -27,6 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           - ensure to start with day 1  
           - MUST break down every single day
           - only output the code. exclude any additional text
+          - If not timeline (ie 1 month) is provided default to 2 weeks
 
           Output Example
           - Day 1: Set Up
