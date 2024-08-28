@@ -21,7 +21,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       messages: [
         {
           role: "system",
-          content: `Create work back time line to accomplish the goal. Break up goal into detailed smaller actionable tasks and subtasks. Use SMART (Specific, Measurable, Achievable, Relevant, Time-bound) goals framework to guide you in creating tasks/subtasks.
+          content: `Create work back time line for learning to draw cartoons. Break up goal into detailed smaller actionable tasks and subtasks. Use SMART goals framework to guide you in creating tasks/subtasks
+          
+          Rules
+          - ensure to start with day 1  
+          - MUST break down every single day
+          - only output the code. exclude any additional text
+
+          Output Example
+          - Day 1: Set Up
+            * Define personal goals for learning to draw cartoons (SMART: Specific, Measurable, Achievable, Relevant, Time-bound) 
+            * Gather basic drawing supplies (pencils, erasers, sketchbook) 
+            * Create a dedicated drawing workspace
+           
+          - Day 2: Basic Drawing Skills
+            * Watch tutorials on basic drawing techniques (lines, shapes) 
+            * Practice drawing basic shapes (circles, squares, triangles) 
+            * Complete 30-minute practice session focusing on line control
+             
+          - Day 3: Understanding Cartoon Style
+            * Research different cartoon styles (classic, modern, anime) 
+            * Choose a cartoon style to focus on 
+            * Create a mood board with examples of chosen style
           `,
         },
         { role: "user", content: `Generate a todo list for the following goal: ${prompt}` },

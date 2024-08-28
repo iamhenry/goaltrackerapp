@@ -30,7 +30,6 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
-      let tasks: string[] = [];
       let fullResponse = "";
 
       while (true) {
@@ -39,26 +38,17 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
 
         const chunk = decoder.decode(value);
         fullResponse += chunk;
-
-        const lines = chunk.split("\n");
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const content = JSON.parse(line.slice(6));
-            fullResponse += content;
-          }
-        }
       }
 
-      // Process the full response to extract tasks and remove markdown characters
-      tasks = fullResponse
+      // Process the full response to extract tasks
+      const tasks = fullResponse
         .split("\n")
-        .filter((line) => line.trim().match(/^\d+\./))
-        .map((line) =>
-          line
-            .trim()
-            .replace(/^\d+\.\s*/, "")
-            .replace(/\*\*/g, "")
-        );
+        .filter((line) => line.startsWith("data: "))
+        .map((line) => JSON.parse(line.slice(5)))
+        .join("")
+        .split("\n")
+        .filter((line) => line.trim().match(/^[-*]\s/))
+        .map((line) => line.trim().replace(/^[-*]\s/, ""));
 
       console.log("Generated tasks:", tasks);
       onNewTasks(tasks);
