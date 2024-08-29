@@ -21,13 +21,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       messages: [
         {
           role: "system",
-          content: `Create work back time line for learning to draw cartoons. Break up goal into detailed smaller actionable tasks and subtasks. Use SMART goals framework to guide you in creating tasks/subtasks
+          content: `Create work back time line for learning to draw cartoons. Break up goal into detailed smaller actionable tasks and subtasks. 
           
           Rules
           - ensure to start with day 1  
           - MUST break down every single day
           - only output the code. exclude any additional text
-          - If not timeline (ie 1 month) is provided default to 2 weeks
+          - MANDATE: If no timeline (ie 1 month) submitted, default to 2 weeks
+          - MANDATE: Use SMART (SMART: Specific, Measurable, Achievable, Relevant, Time-bound)  goals framework to guide you in creating tasks/subtasks
 
           Output Example
           - Day 1: Set Up

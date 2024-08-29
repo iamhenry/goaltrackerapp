@@ -9,6 +9,7 @@ interface TodoGeneratorProps {
 const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
   const [goal, setGoal] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +53,7 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
 
       console.log("Generated tasks:", tasks);
       onNewTasks(tasks);
+      setIsSubmitted(true);
     } catch (error) {
       console.error("Error generating todos:", error);
     } finally {
@@ -60,8 +62,12 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
     }
   };
 
+  if (isSubmitted) {
+    return null; // Return null to hide the component after submission
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-4">
       <Input
         value={goal}
         onChange={(e) => setGoal(e.target.value)}
