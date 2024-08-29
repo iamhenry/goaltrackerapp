@@ -51,7 +51,7 @@ const DraggableTask: React.FC<DraggableTaskProps> = ({
     <div
       ref={(node) => drag(drop(node))}
       style={{ opacity: isDragging ? 0.5 : 1 }}
-      className={`mb-2 ${task.title.includes("Day") ? "" : "ml-6"}`}
+      className={task.title.includes("Day") ? "" : "ml-6"}
     >
       <Task
         task={task}
@@ -83,14 +83,20 @@ const TaskList: React.FC<TaskListProps> = ({
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="space-y-2">
+      <div>
         {tasks.map((task, index) => (
           <DraggableTask
             key={task.id}
             task={task}
             index={index}
             moveTask={moveTask}
-            onEdit={(updatedTask) => onEditTask(task.id, updatedTask)}
+            onEdit={(updatedTask) => {
+              if (updatedTask.title.trim() === "") {
+                onDeleteTask(task.id);
+              } else {
+                onEditTask(task.id, updatedTask);
+              }
+            }}
             onDelete={() => onDeleteTask(task.id)}
             onToggle={() => onToggleComplete(task.id)}
           />

@@ -13,7 +13,7 @@ interface TaskProps {
 }
 
 const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(task.title === "");
   const [editedTitle, setEditedTitle] = useState(task.title);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -24,8 +24,12 @@ const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
   }, [isEditing]);
 
   const handleSave = () => {
-    onEdit({ ...task, title: editedTitle });
-    setIsEditing(false);
+    if (editedTitle.trim() === "") {
+      onDelete(); // Delete the task if it's empty
+    } else {
+      onEdit({ ...task, title: editedTitle.trim() });
+      setIsEditing(false);
+    }
   };
 
   const handleClick = () => {
@@ -35,7 +39,7 @@ const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
   };
 
   return (
-    <div className="flex items-center space-x-2 w-full">
+    <div className="flex items-center space-x-2 w-full group hover:bg-gray-100 rounded-xl transition-colors duration-200 px-3 py-2">
       <Checkbox checked={task.completed} onCheckedChange={onToggle} />
       {isEditing ? (
         <Input
@@ -46,19 +50,25 @@ const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
           onKeyPress={(e) => {
             if (e.key === "Enter") handleSave();
           }}
-          className="flex-grow"
+          className="flex-grow text-base"
+          placeholder="Enter task..."
         />
       ) : (
         <span
           className={`flex-grow cursor-pointer ${
             task.completed ? "line-through" : ""
-          }`}
+          } text-[#242424] group-hover:text-[#242424] text-base`}
           onClick={handleClick}
         >
           {task.title}
         </span>
       )}
-      <Button variant="ghost" size="sm" onClick={onDelete}>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onDelete}
+        className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+      >
         <Trash size={16} />
       </Button>
     </div>

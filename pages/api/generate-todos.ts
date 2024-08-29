@@ -29,6 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           - only output the code. exclude any additional text
           - MANDATE: If no timeline (ie 1 month) submitted, default to 2 weeks
           - MANDATE: Use SMART (SMART: Specific, Measurable, Achievable, Relevant, Time-bound)  goals framework to guide you in creating tasks/subtasks
+          - MANDATE: Days should be in sequential order (ie: Day 1, Day 2, Day 3, etc) not grouped (ie: Day 6-7 or 8-14)
 
           Output Example
           - Day 1: Set Up

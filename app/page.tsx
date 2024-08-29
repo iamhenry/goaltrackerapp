@@ -10,6 +10,7 @@ import { TaskType, UserState } from "./types/task";
 import TaskList from "@/app/components/ui/TaskList";
 import TodoGenerator from "@/app/components/TodoGenerator";
 import { Pencil, Save } from "lucide-react"; // Add Save icon
+import { Plus } from "lucide-react"; // Add this import
 
 export default function Home() {
   const [userState, setUserState] = useState<UserState>({
@@ -105,11 +106,19 @@ export default function Home() {
       description: "",
       completed: false,
     }));
-    setUserState((prevState) => ({
-      ...prevState,
-      tasks: [...prevState.tasks, ...updatedTasks],
-      progress: calculateProgress([...prevState.tasks, ...updatedTasks]),
-    }));
+    setUserState((prevState) => {
+      const newState = {
+        ...prevState,
+        tasks: [...prevState.tasks, ...updatedTasks],
+        progress: calculateProgress([...prevState.tasks, ...updatedTasks]),
+      };
+      // Save to localStorage immediately after updating state
+      if (isClient) {
+        localStorage.setItem("userState", JSON.stringify(newState));
+      }
+      return newState;
+    });
+    setIsGoalCreated(true);
   };
 
   const handleGoalNameChange = () => {
@@ -120,6 +129,43 @@ export default function Home() {
       }));
       setIsEditingGoal(false);
     }
+  };
+
+  const addEmptyTask = () => {
+    const newTask: TaskType = {
+      id: String(Date.now()),
+      title: "",
+      description: "",
+      completed: false,
+    };
+    setUserState((prevState) => ({
+      ...prevState,
+      tasks: [...prevState.tasks, newTask],
+    }));
+  };
+
+  const handleEditTask = (id: string, updatedTask: TaskType) => {
+    if (updatedTask.title.trim() === "") {
+      handleDeleteTask(id);
+    } else {
+      const newTasks = userState.tasks.map((task) =>
+        task.id === id ? { ...task, ...updatedTask } : task
+      );
+      setUserState((prevState) => ({
+        ...prevState,
+        tasks: newTasks,
+        progress: calculateProgress(newTasks),
+      }));
+    }
+  };
+
+  const handleDeleteTask = (id: string) => {
+    const newTasks = userState.tasks.filter((task) => task.id !== id);
+    setUserState((prevState) => ({
+      ...prevState,
+      tasks: newTasks,
+      progress: calculateProgress(newTasks),
+    }));
   };
 
   if (!isClient) {
@@ -173,27 +219,19 @@ export default function Home() {
         <TodoGenerator onNewTasks={handleNewTasks} />
         <TaskList
           tasks={userState.tasks}
-          onEditTask={(id, updatedTask) => {
-            const newTasks = userState.tasks.map((task) =>
-              task.id === id ? { ...task, ...updatedTask } : task
-            );
-            setUserState((prevState) => ({
-              ...prevState,
-              tasks: newTasks,
-              progress: calculateProgress(newTasks),
-            }));
-          }}
-          onDeleteTask={(id) => {
-            const newTasks = userState.tasks.filter((task) => task.id !== id);
-            setUserState((prevState) => ({
-              ...prevState,
-              tasks: newTasks,
-              progress: calculateProgress(newTasks),
-            }));
-          }}
+          onEditTask={handleEditTask}
+          onDeleteTask={handleDeleteTask}
           onToggleComplete={toggleTodo}
           onReorderTasks={handleReorderTasks}
         />
+        <Button
+          variant="ghost"
+          className="w-full mt-4 text-gray-500 hover:text-gray-700 flex items-center justify-start"
+          onClick={addEmptyTask}
+        >
+          <Plus size={20} className="mr-2" />
+          Add task...
+        </Button>
       </div>
     </div>
   );
