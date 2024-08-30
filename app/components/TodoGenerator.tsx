@@ -67,7 +67,7 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-10">
       <Input
         value={goal}
         onChange={(e) => setGoal(e.target.value)}
