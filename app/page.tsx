@@ -217,32 +217,6 @@ export default function Home() {
   return (
     <div className="flex justify-center min-h-screen bg-gray-100 py-8">
       <div className="w-[780px] bg-white rounded-lg shadow-md p-6">
-        <div className="flex flex-col space-y-4 mb-6">
-          <Button
-            variant="outline"
-            className="justify-between text-left"
-            onClick={() => handleGoalSubmit("Speak Spanish in 3 months")}
-          >
-            <span>Speak Spanish in 3 months</span>
-            <span>→</span>
-          </Button>
-          <Button
-            variant="outline"
-            className="justify-between text-left"
-            onClick={() => handleGoalSubmit("Save for Europe trip in 6 weeks")}
-          >
-            <span>Save for Europe trip in 6 weeks</span>
-            <span>→</span>
-          </Button>
-          <Button
-            variant="outline"
-            className="justify-between text-left"
-            onClick={() => handleGoalSubmit("Learn to draw in 6 months")}
-          >
-            <span>Learn to draw in 6 months</span>
-            <span>→</span>
-          </Button>
-        </div>
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
             {isEditingGoal ? (
@@ -295,7 +269,37 @@ export default function Home() {
           />
         </div>
         {userState.tasks.length === 0 && (
-          <TodoGenerator onNewTasks={handleNewTasks} />
+          <>
+            <TodoGenerator onNewTasks={handleNewTasks} />
+            <div className="flex flex-col space-y-4 mb-6">
+              <Button
+                variant="outline"
+                className="justify-between text-left"
+                onClick={() => handleGoalSubmit("Speak Spanish in 3 months")}
+              >
+                <span>Speak Spanish in 3 months</span>
+                <span>→</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="justify-between text-left"
+                onClick={() =>
+                  handleGoalSubmit("Save for Europe trip in 6 weeks")
+                }
+              >
+                <span>Save for Europe trip in 6 weeks</span>
+                <span>→</span>
+              </Button>
+              <Button
+                variant="outline"
+                className="justify-between text-left"
+                onClick={() => handleGoalSubmit("Learn to draw in 6 months")}
+              >
+                <span>Learn to draw in 6 months</span>
+                <span>→</span>
+              </Button>
+            </div>
+          </>
         )}
         <TaskList
           tasks={userState.tasks}
