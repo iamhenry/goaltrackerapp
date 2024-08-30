@@ -279,32 +279,34 @@ export default function Home() {
           <>
             <TodoGenerator onNewTasks={handleNewTasks} />
             <div className="flex flex-col space-y-4 mb-6">
-              <Button
-                variant="outline"
-                className="justify-between text-left"
-                onClick={() => handleGoalSubmit("Speak Spanish in 3 months")}
-              >
-                <span>Speak Spanish in 3 months</span>
-                <span>→</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="justify-between text-left"
-                onClick={() =>
-                  handleGoalSubmit("Save for Europe trip in 6 weeks")
-                }
-              >
-                <span>Save for Europe trip in 6 weeks</span>
-                <span>→</span>
-              </Button>
-              <Button
-                variant="outline"
-                className="justify-between text-left"
-                onClick={() => handleGoalSubmit("Learn to draw in 6 months")}
-              >
-                <span>Learn to draw in 6 months</span>
-                <span>→</span>
-              </Button>
+              {[
+                "Speak Spanish in 3 months",
+                "Save for Europe trip in 6 weeks",
+                "Learn to draw in 6 months",
+              ].map((goal) => (
+                <Button
+                  key={goal}
+                  variant="outline"
+                  className="flex justify-between items-center p-10 h-28 text-left text-lg font-medium bg-white border border-[#D9D9D9] rounded-[20px] hover:bg-gray-50 transition-colors"
+                  onClick={() => handleGoalSubmit(goal)}
+                >
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 mr-4 bg-blue-100 rounded-full flex items-center justify-center">
+                      {goal.startsWith("Speak") && (
+                        <span className="text-xl">🗣️</span>
+                      )}
+                      {goal.startsWith("Save") && (
+                        <span className="text-xl">💶</span>
+                      )}
+                      {goal.startsWith("Learn") && (
+                        <span className="text-xl">🎨</span>
+                      )}
+                    </div>
+                    <span>{goal}</span>
+                  </div>
+                  <span className="text-2xl">→</span>
+                </Button>
+              ))}
             </div>
           </>
         )}
