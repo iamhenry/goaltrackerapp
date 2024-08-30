@@ -217,57 +217,64 @@ export default function Home() {
   return (
     <div className="flex justify-center min-h-screen bg-gray-100 py-8">
       <div className="w-[780px] bg-white rounded-lg shadow-md p-6">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center">
-            {isEditingGoal ? (
+        {userState.tasks.length > 0 && (
+          <>
+            <div className="flex justify-between items-center mb-6">
               <div className="flex items-center">
-                <Input
-                  value={editedGoalName}
-                  onChange={(e) => setEditedGoalName(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter") {
-                      handleGoalNameChange();
-                    }
-                  }}
-                  className="text-3xl font-bold mr-2"
-                  autoFocus
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleGoalNameChange}
-                >
-                  <Save size={16} />
-                </Button>
+                {isEditingGoal ? (
+                  <div className="flex items-center">
+                    <Input
+                      value={editedGoalName}
+                      onChange={(e) => setEditedGoalName(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          handleGoalNameChange();
+                        }
+                      }}
+                      className="text-3xl font-bold mr-2"
+                      autoFocus
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleGoalNameChange}
+                    >
+                      <Save size={16} />
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <h1 className="text-3xl font-bold">{userState.goalName}</h1>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setEditedGoalName(userState.goalName);
+                        setIsEditingGoal(true);
+                      }}
+                      className="ml-2"
+                    >
+                      <Pencil size={16} />
+                    </Button>
+                  </>
+                )}
               </div>
-            ) : (
-              <>
-                <h1 className="text-3xl font-bold">{userState.goalName}</h1>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setEditedGoalName(userState.goalName);
-                    setIsEditingGoal(true);
-                  }}
-                  className="ml-2"
-                >
-                  <Pencil size={16} />
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
-        <div className="w-full mb-4">
-          <div className="flex justify-between mb-2">
-            <span>{userState.progress}%</span>
-            <span>100%</span>
-          </div>
-          <ProgressBar
-            value={userState.progress}
-            className={cn("w-full h-1", "bg-[#E5E7EB] [&>div]:bg-[#1921FF]")}
-          />
-        </div>
+            </div>
+            <div className="w-full mb-4">
+              <div className="flex justify-between mb-2">
+                <span>{userState.progress}%</span>
+                <span>100%</span>
+              </div>
+              <ProgressBar
+                value={userState.progress}
+                className={cn(
+                  "w-full h-1",
+                  "bg-[#E5E7EB] [&>div]:bg-[#1921FF]"
+                )}
+              />
+            </div>
+          </>
+        )}
         {userState.tasks.length === 0 && (
           <>
             <TodoGenerator onNewTasks={handleNewTasks} />
