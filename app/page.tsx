@@ -122,6 +122,47 @@ export default function Home() {
     setIsGoalCreated(true);
   };
 
+  const handleGoalSubmit = async (goal: string) => {
+    try {
+      const response = await fetch("/api/generate-todos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: goal }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate todos");
+      }
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let fullResponse = "";
+
+      while (true) {
+        const { done, value } = await reader!.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        fullResponse += chunk;
+      }
+
+      const tasks = fullResponse
+        .split("\n")
+        .filter((line) => line.startsWith("data: "))
+        .map((line) => JSON.parse(line.slice(5)))
+        .join("")
+        .split("\n")
+        .filter((line) => line.trim().match(/^[-*]\s/))
+        .map((line) => line.trim().replace(/^[-*]\s/, ""));
+
+      handleNewTasks(tasks);
+    } catch (error) {
+      console.error("Error generating todos:", error);
+    }
+  };
+
   const handleGoalNameChange = () => {
     if (editedGoalName.trim() !== "") {
       setUserState((prevState) => ({
@@ -176,6 +217,32 @@ export default function Home() {
   return (
     <div className="flex justify-center min-h-screen bg-gray-100 py-8">
       <div className="w-[780px] bg-white rounded-lg shadow-md p-6">
+        <div className="flex flex-col space-y-4 mb-6">
+          <Button
+            variant="outline"
+            className="justify-between text-left"
+            onClick={() => handleGoalSubmit("Speak Spanish in 3 months")}
+          >
+            <span>Speak Spanish in 3 months</span>
+            <span>→</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="justify-between text-left"
+            onClick={() => handleGoalSubmit("Save for Europe trip in 6 weeks")}
+          >
+            <span>Save for Europe trip in 6 weeks</span>
+            <span>→</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="justify-between text-left"
+            onClick={() => handleGoalSubmit("Learn to draw in 6 months")}
+          >
+            <span>Learn to draw in 6 months</span>
+            <span>→</span>
+          </Button>
+        </div>
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
             {isEditingGoal ? (
