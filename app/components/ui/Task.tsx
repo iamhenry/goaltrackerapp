@@ -18,7 +18,8 @@ const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const dragStartTime = useRef<number>(0);
-  const clickTarget = useRef<"checkbox" | "text" | null>(null);
+  const clickCount = useRef<number>(0);
+  const clickTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -38,25 +39,51 @@ const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
   const handleMouseDown = (e: React.MouseEvent) => {
     dragStartTime.current = Date.now();
     setIsDragging(false);
-    if ((e.target as HTMLElement).closest(".checkbox-wrapper")) {
-      clickTarget.current = "checkbox";
-    } else {
-      clickTarget.current = "text";
+
+    clickCount.current += 1;
+
+    if (clickTimer.current) {
+      clearTimeout(clickTimer.current);
     }
+
+    clickTimer.current = setTimeout(() => {
+      if (clickCount.current === 1) {
+        // Single click
+        if (!(e.target as HTMLElement).closest(".checkbox-wrapper")) {
+          onToggle();
+        }
+      } else if (clickCount.current === 2) {
+        // Double click
+        handleDoubleClick();
+      }
+      clickCount.current = 0;
+    }, 300); // Adjust this timeout as needed
   };
 
   const handleMouseUp = () => {
     const dragDuration = Date.now() - dragStartTime.current;
-    if (dragDuration < 200 && !isDragging && clickTarget.current === "text") {
-      handleClick();
+    if (dragDuration >= 200 || isDragging) {
+      // Consider it a drag, not a click
+      clickCount.current = 0;
+      if (clickTimer.current) {
+        clearTimeout(clickTimer.current);
+      }
     }
     setIsDragging(false);
-    clickTarget.current = null;
   };
 
-  const handleClick = () => {
+  const handleDoubleClick = () => {
     if (!task.completed) {
       setIsEditing(true);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSave();
+    } else if (e.key === "Escape") {
+      setIsEditing(false);
+      setEditedTitle(task.title); // Reset to original title
     }
   };
 
@@ -79,17 +106,15 @@ const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
           value={editedTitle}
           onChange={(e) => setEditedTitle(e.target.value)}
           onBlur={handleSave}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") handleSave();
-          }}
+          onKeyDown={handleKeyDown}
           className="flex-grow text-base"
           placeholder="Enter task..."
         />
       ) : (
         <span
-          className={`flex-grow cursor-pointer ${
+          className={`flex-grow ${
             task.completed ? "line-through" : ""
-          } text-[#242424] group-hover:text-[#242424] text-base`}
+          } text-[#242424] group-hover:text-[#242424] text-base cursor-pointer`}
         >
           {task.title}
         </span>
