@@ -11,6 +11,7 @@ import TaskList from "@/app/components/ui/TaskList";
 import TodoGenerator from "@/app/components/TodoGenerator";
 import { Pencil, Save } from "lucide-react"; // Add Save icon
 import { Plus } from "lucide-react"; // Add this import
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   const [userState, setUserState] = useState<UserState>({
@@ -171,50 +172,60 @@ export default function Home() {
   if (!isClient) {
     return null; // or a loading spinner
   }
-  // tets
+
   return (
     <div className="flex justify-center min-h-screen bg-gray-100 py-8">
       <div className="w-[780px] bg-white rounded-lg shadow-md p-6">
-        <div className="flex justify-center items-center mb-6">
-          {isEditingGoal ? (
-            <div className="flex items-center">
-              <Input
-                value={editedGoalName}
-                onChange={(e) => setEditedGoalName(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    handleGoalNameChange();
-                  }
-                }}
-                className="text-3xl font-bold text-center mr-2"
-                autoFocus
-              />
-              <Button variant="ghost" size="sm" onClick={handleGoalNameChange}>
-                <Save size={16} />
-              </Button>
-            </div>
-          ) : (
-            <>
-              <h1 className="text-3xl font-bold text-center">
-                {userState.goalName}
-              </h1>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setEditedGoalName(userState.goalName);
-                  setIsEditingGoal(true);
-                }}
-                className="ml-2"
-              >
-                <Pencil size={16} />
-              </Button>
-            </>
-          )}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center">
+            {isEditingGoal ? (
+              <div className="flex items-center">
+                <Input
+                  value={editedGoalName}
+                  onChange={(e) => setEditedGoalName(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      handleGoalNameChange();
+                    }
+                  }}
+                  className="text-3xl font-bold mr-2"
+                  autoFocus
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleGoalNameChange}
+                >
+                  <Save size={16} />
+                </Button>
+              </div>
+            ) : (
+              <>
+                <h1 className="text-3xl font-bold">{userState.goalName}</h1>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setEditedGoalName(userState.goalName);
+                    setIsEditingGoal(true);
+                  }}
+                  className="ml-2"
+                >
+                  <Pencil size={16} />
+                </Button>
+              </>
+            )}
+          </div>
         </div>
         <div className="w-full mb-4">
-          <ProgressBar value={userState.progress} className="w-full" />
-          <p className="text-center mt-2">{userState.progress}% completed</p>
+          <div className="flex justify-between mb-2">
+            <span>{userState.progress}%</span>
+            <span>100%</span>
+          </div>
+          <ProgressBar
+            value={userState.progress}
+            className={cn("w-full h-1", "bg-[#E5E7EB] [&>div]:bg-[#1921FF]")}
+          />
         </div>
         {userState.tasks.length === 0 && (
           <TodoGenerator onNewTasks={handleNewTasks} />
