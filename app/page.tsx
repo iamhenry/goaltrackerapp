@@ -216,7 +216,9 @@ export default function Home() {
           <ProgressBar value={userState.progress} className="w-full" />
           <p className="text-center mt-2">{userState.progress}% completed</p>
         </div>
-        <TodoGenerator onNewTasks={handleNewTasks} />
+        {userState.tasks.length === 0 && (
+          <TodoGenerator onNewTasks={handleNewTasks} />
+        )}
         <TaskList
           tasks={userState.tasks}
           onEditTask={handleEditTask}
