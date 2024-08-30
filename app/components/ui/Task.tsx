@@ -16,6 +16,9 @@ const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
   const [isEditing, setIsEditing] = useState(task.title === "");
   const [editedTitle, setEditedTitle] = useState(task.title);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartTime = useRef<number>(0);
+  const clickTarget = useRef<"checkbox" | "text" | null>(null);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -32,6 +35,25 @@ const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
     }
   };
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    dragStartTime.current = Date.now();
+    setIsDragging(false);
+    if ((e.target as HTMLElement).closest(".checkbox-wrapper")) {
+      clickTarget.current = "checkbox";
+    } else {
+      clickTarget.current = "text";
+    }
+  };
+
+  const handleMouseUp = () => {
+    const dragDuration = Date.now() - dragStartTime.current;
+    if (dragDuration < 200 && !isDragging && clickTarget.current === "text") {
+      handleClick();
+    }
+    setIsDragging(false);
+    clickTarget.current = null;
+  };
+
   const handleClick = () => {
     if (!task.completed) {
       setIsEditing(true);
@@ -39,8 +61,18 @@ const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
   };
 
   return (
-    <div className="flex items-center space-x-2 w-full group hover:bg-gray-100 rounded-xl transition-colors duration-200 px-3 py-2">
-      <Checkbox checked={task.completed} onCheckedChange={onToggle} />
+    <div
+      className="flex items-center space-x-2 w-full group hover:bg-gray-100 rounded-xl transition-colors duration-200 px-3 py-2"
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onMouseMove={() => setIsDragging(true)}
+      onTouchStart={handleMouseDown as any}
+      onTouchEnd={handleMouseUp}
+      onTouchMove={() => setIsDragging(true)}
+    >
+      <div className="checkbox-wrapper">
+        <Checkbox checked={task.completed} onCheckedChange={onToggle} />
+      </div>
       {isEditing ? (
         <Input
           ref={inputRef}
@@ -58,7 +90,6 @@ const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
           className={`flex-grow cursor-pointer ${
             task.completed ? "line-through" : ""
           } text-[#242424] group-hover:text-[#242424] text-base`}
-          onClick={handleClick}
         >
           {task.title}
         </span>

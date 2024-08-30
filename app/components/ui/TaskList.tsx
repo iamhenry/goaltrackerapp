@@ -1,8 +1,7 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { TaskType } from "@/app/types/task";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 import Task from "./Task";
+import { motion, Reorder } from "framer-motion";
 
 interface TaskListProps {
   tasks: TaskType[];
@@ -12,46 +11,19 @@ interface TaskListProps {
   onReorderTasks: (newTasks: TaskType[]) => void;
 }
 
-interface DraggableTaskProps {
+const TaskItem: React.FC<{
   task: TaskType;
-  index: number;
-  moveTask: (dragIndex: number, hoverIndex: number) => void;
   onEdit: (updatedTask: TaskType) => void;
   onDelete: () => void;
   onToggle: () => void;
-}
-
-const DraggableTask: React.FC<DraggableTaskProps> = ({
-  task,
-  index,
-  moveTask,
-  onEdit,
-  onDelete,
-  onToggle,
-}) => {
-  const [{ isDragging }, drag] = useDrag({
-    type: "TASK",
-    item: { index },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  const [, drop] = useDrop({
-    accept: "TASK",
-    hover(item: { index: number }) {
-      if (item.index !== index) {
-        moveTask(item.index, index);
-        item.index = index;
-      }
-    },
-  });
-
+}> = ({ task, onEdit, onDelete, onToggle }) => {
   return (
-    <div
-      ref={(node) => drag(drop(node))}
-      style={{ opacity: isDragging ? 0.5 : 1 }}
+    <motion.div
       className={task.title.includes("Day") ? "" : "ml-6"}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.2 }}
     >
       <Task
         task={task}
@@ -59,7 +31,7 @@ const DraggableTask: React.FC<DraggableTaskProps> = ({
         onToggle={onToggle}
         onEdit={onEdit}
       />
-    </div>
+    </motion.div>
   );
 };
 
@@ -70,39 +42,32 @@ const TaskList: React.FC<TaskListProps> = ({
   onToggleComplete,
   onReorderTasks,
 }) => {
-  const moveTask = useCallback(
-    (dragIndex: number, hoverIndex: number) => {
-      const newTasks = [...tasks];
-      const draggedTask = newTasks[dragIndex];
-      newTasks.splice(dragIndex, 1);
-      newTasks.splice(hoverIndex, 0, draggedTask);
-      onReorderTasks(newTasks);
-    },
-    [tasks, onReorderTasks]
-  );
-
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div>
-        {tasks.map((task, index) => (
-          <DraggableTask
-            key={task.id}
-            task={task}
-            index={index}
-            moveTask={moveTask}
-            onEdit={(updatedTask) => {
-              if (updatedTask.title.trim() === "") {
-                onDeleteTask(task.id);
-              } else {
-                onEditTask(task.id, updatedTask);
-              }
-            }}
-            onDelete={() => onDeleteTask(task.id)}
-            onToggle={() => onToggleComplete(task.id)}
-          />
-        ))}
-      </div>
-    </DndProvider>
+    <Reorder.Group axis="y" values={tasks} onReorder={onReorderTasks} as="div">
+      {tasks.map((task, index) => (
+        <Reorder.Item key={task.id} value={task} as="div">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.1, delay: index * 0.02 }}
+          >
+            <TaskItem
+              task={task}
+              onEdit={(updatedTask) => {
+                if (updatedTask.title.trim() === "") {
+                  onDeleteTask(task.id);
+                } else {
+                  onEditTask(task.id, updatedTask);
+                }
+              }}
+              onDelete={() => onDeleteTask(task.id)}
+              onToggle={() => onToggleComplete(task.id)}
+            />
+          </motion.div>
+        </Reorder.Item>
+      ))}
+    </Reorder.Group>
   );
 };
 
