@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
 interface TodoGeneratorProps {
-  onNewTasks: (tasks: string[]) => void;
+  onNewTasks: (tasks: string[], goalText: string) => void;
 }
 
 const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
@@ -52,7 +52,7 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
         .map((line) => line.trim().replace(/^[-*]\s/, ""));
 
       console.log("Generated tasks:", tasks);
-      onNewTasks(tasks);
+      onNewTasks(tasks, goal);
       setIsSubmitted(true);
     } catch (error) {
       console.error("Error generating todos:", error);
@@ -67,7 +67,7 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-10">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-4">
       <Input
         value={goal}
         onChange={(e) => setGoal(e.target.value)}

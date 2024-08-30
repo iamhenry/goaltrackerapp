@@ -17,7 +17,7 @@ export default function Home() {
   const [userState, setUserState] = useState<UserState>({
     tasks: [],
     progress: 0,
-    goalName: "Todo App", // Add this line
+    goalName: "", // Initialize with an empty string
   });
   const [newTodo, setNewTodo] = useState("");
   const [isClient, setIsClient] = useState(false);
@@ -100,7 +100,7 @@ export default function Home() {
     }));
   };
 
-  const handleNewTasks = (newTasks: string[]) => {
+  const handleNewTasks = (newTasks: string[], goalText: string) => {
     const updatedTasks = newTasks.map((task) => ({
       id: String(Date.now() + Math.random()),
       title: task,
@@ -112,6 +112,7 @@ export default function Home() {
         ...prevState,
         tasks: [...prevState.tasks, ...updatedTasks],
         progress: calculateProgress([...prevState.tasks, ...updatedTasks]),
+        goalName: goalText, // Set the goalName to the input text
       };
       // Save to localStorage immediately after updating state
       if (isClient) {
@@ -123,6 +124,10 @@ export default function Home() {
   };
 
   const handleGoalSubmit = async (goal: string) => {
+    setUserState((prevState) => ({
+      ...prevState,
+      goalName: goal,
+    }));
     try {
       const response = await fetch("/api/generate-todos", {
         method: "POST",
@@ -157,7 +162,7 @@ export default function Home() {
         .filter((line) => line.trim().match(/^[-*]\s/))
         .map((line) => line.trim().replace(/^[-*]\s/, ""));
 
-      handleNewTasks(tasks);
+      handleNewTasks(tasks, goal);
     } catch (error) {
       console.error("Error generating todos:", error);
     }
