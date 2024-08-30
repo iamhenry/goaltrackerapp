@@ -174,7 +174,7 @@ export default function Home() {
 
   return (
     <div className="flex justify-center min-h-screen bg-gray-100 py-8">
-      <div className="w-[600px] bg-white rounded-lg shadow-md p-6">
+      <div className="w-[780px] bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-center items-center mb-6">
           {isEditingGoal ? (
             <div className="flex items-center">
@@ -224,14 +224,16 @@ export default function Home() {
           onToggleComplete={toggleTodo}
           onReorderTasks={handleReorderTasks}
         />
-        <Button
-          variant="ghost"
-          className="w-full mt-4 text-gray-500 hover:text-gray-700 flex items-center justify-start"
-          onClick={addEmptyTask}
-        >
-          <Plus size={20} className="mr-2" />
-          Add task...
-        </Button>
+        {userState.tasks.length > 0 && (
+          <Button
+            variant="ghost"
+            className="w-full mt-4 text-gray-500 hover:text-gray-700 flex items-center justify-start"
+            onClick={addEmptyTask}
+          >
+            <Plus size={20} className="mr-2" />
+            Add task...
+          </Button>
+        )}
       </div>
     </div>
   );
