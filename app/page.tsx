@@ -3,6 +3,8 @@
 import { useState, useEffect, KeyboardEvent } from "react";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
+import { Header } from "@/app/components/Header";
+
 import { Checkbox } from "@/app/components/ui/checkbox";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Progress as ProgressBar } from "@/app/components/ui/progress";
