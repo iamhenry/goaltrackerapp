@@ -112,8 +112,8 @@ const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
         />
       ) : (
         <span
-          className={`flex-grow ${
-            task.completed ? "line-through" : ""
+          className={`flex-grow ${task.completed ? "line-through" : ""} ${
+            task.title.startsWith("Day") ? "font-bold" : ""
           } text-[#242424] group-hover:text-[#242424] text-base cursor-pointer`}
         >
           {task.title}

@@ -31,6 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           - MANDATE: Use SMART: Specific, Measurable, Achievable, Relevant, Time-bound goals framework to creating tasks/subtasks
           - MANDATE: Days should be in sequential order (ie: Day 1, Day 2, Day 3, etc) NEVER grouped (ie: Day 6-7 or 8-14)
           - MANDATE: Ensure goals are extremely relevant and actionable to the user input query
+          - MANDATE: Focus on creating high impact tasks
 
           Output Example
           - Day 1: Set Up
