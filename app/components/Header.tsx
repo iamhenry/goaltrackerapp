@@ -27,7 +27,11 @@ export function Header() {
             />
           </svg>
         </div>
-        <Button variant="outline" onClick={() => setIsModalOpen(true)}>
+        <Button
+          variant="outline"
+          onClick={() => setIsModalOpen(true)}
+          className="rounded-full bg-[#FF19CC] text-white border-[#FF19CC] hover:bg-[#CC14A3] hover:border-[#CC14A3] hover:text-white"
+        >
           New Goal
         </Button>
       </div>
