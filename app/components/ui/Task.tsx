@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Checkbox } from "./checkbox";
 import { Button } from "./button";
 import { Input } from "./input";
-import { Trash } from "lucide-react";
+import { Trash, GripVertical } from "lucide-react"; // Add GripVertical import
 import { TaskType } from "@/app/types/task";
 
 interface TaskProps {
@@ -97,6 +97,9 @@ const Task: React.FC<TaskProps> = ({ task, onDelete, onToggle, onEdit }) => {
       onTouchEnd={handleMouseUp}
       onTouchMove={() => setIsDragging(true)}
     >
+      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <GripVertical size={16} className="text-gray-300 cursor-grab" />
+      </div>
       <div className="checkbox-wrapper">
         <Checkbox checked={task.completed} onCheckedChange={onToggle} />
       </div>
