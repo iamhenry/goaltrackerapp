@@ -15,6 +15,28 @@ import { Pencil, Save } from "lucide-react"; // Add Save icon
 import { Plus } from "lucide-react"; // Add this import
 import { cn } from "@/lib/utils";
 
+function debounce(func: Function, wait: number) {
+  let timeout: NodeJS.Timeout | null = null;
+  const debouncedFunc = function (...args: any[]) {
+    const later = () => {
+      timeout = null;
+      func(...args);
+    };
+    if (timeout !== null) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(later, wait);
+  };
+
+  debouncedFunc.cancel = function () {
+    if (timeout !== null) {
+      clearTimeout(timeout);
+    }
+  };
+
+  return debouncedFunc;
+}
+
 export default function Home() {
   const [userState, setUserState] = useState<UserState>({
     tasks: [],
@@ -36,7 +58,15 @@ export default function Home() {
 
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem("userState", JSON.stringify(userState));
+      const saveToStorage = debounce(() => {
+        localStorage.setItem("userState", JSON.stringify(userState));
+      }, 500);
+      saveToStorage();
+      return () => {
+        if (typeof saveToStorage.cancel === "function") {
+          saveToStorage.cancel();
+        }
+      };
     }
   }, [userState, isClient]);
 
