@@ -11,7 +11,7 @@ import { Progress as ProgressBar } from "@/app/components/ui/progress";
 import { TaskType, UserState } from "./types/task";
 import TaskList from "@/app/components/ui/TaskList";
 import TodoGenerator from "@/app/components/TodoGenerator";
-import { Pencil, Save } from "lucide-react"; // Add Save icon
+import { Pencil, Save, Loader2 } from "lucide-react"; // Add Save icon
 import { Plus } from "lucide-react"; // Add this import
 import { cn } from "@/lib/utils";
 
@@ -47,6 +47,7 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [isEditingGoal, setIsEditingGoal] = useState(false); // Add this line
   const [editedGoalName, setEditedGoalName] = useState(userState.goalName);
+  const [loadingGoal, setLoadingGoal] = useState<string | null>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -156,10 +157,7 @@ export default function Home() {
   };
 
   const handleGoalSubmit = async (goal: string) => {
-    setUserState((prevState) => ({
-      ...prevState,
-      goalName: goal,
-    }));
+    setLoadingGoal(goal);
     try {
       const response = await fetch("/api/generate-todos", {
         method: "POST",
@@ -197,6 +195,8 @@ export default function Home() {
       handleNewTasks(tasks, goal);
     } catch (error) {
       console.error("Error generating todos:", error);
+    } finally {
+      setLoadingGoal(null);
     }
   };
 
@@ -318,7 +318,7 @@ export default function Home() {
             <div className="flex flex-col space-y-4 mb-6">
               {[
                 { goal: "Speak Spanish in 3 months", icon: "language" },
-                { goal: "Save for Europe trip in 6 weeks", icon: "savings" },
+                { goal: "Indie hacker in 3 months", icon: "savings" },
                 { goal: "Learn to draw in 6 months", icon: "brush" },
               ].map(({ goal, icon }) => (
                 <Button
@@ -326,6 +326,7 @@ export default function Home() {
                   variant="outline"
                   className="flex justify-between items-center p-10 h-28 text-left text-lg font-medium bg-white border border-[#D9D9D9] rounded-[20px] hover:bg-gray-50 transition-colors"
                   onClick={() => handleGoalSubmit(goal)}
+                  disabled={loadingGoal !== null}
                 >
                   <div className="flex items-center">
                     <div className="w-8 h-8 mr-4 flex items-center justify-center">
@@ -391,21 +392,25 @@ export default function Home() {
                     </div>
                     <span>{goal}</span>
                   </div>
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9 18L15 12L9 6"
-                      stroke="#D9D9D9"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  {loadingGoal === goal ? (
+                    <Loader2 className="h-6 w-6 animate-spin text-black" />
+                  ) : (
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 18L15 12L9 6"
+                        stroke="#000000"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  )}
                 </Button>
               ))}
             </div>
