@@ -252,8 +252,8 @@ export default function Home() {
   }
 
   return (
-    <div className="flex justify-center min-h-screen bg-gray-100 py-8">
-      <div className="w-[780px] bg-white rounded-lg shadow-md p-6">
+    <div className="flex flex-col pt-20 bg-gray-100 min-h-screen">
+      <div className="w-[780px] bg-white rounded-lg shadow-md p-6 mx-auto">
         {userState.tasks.length > 0 && (
           <>
             <div className="flex justify-between items-center mb-6">
@@ -434,6 +434,15 @@ export default function Home() {
           </Button>
         )}
       </div>
+      <footer className="text-center py-4 mt-10">
+        <a
+          href="https://twitter.com/soyhenryxyz"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Follow @soyhenryxyz for updates to Goal Tracker
+        </a>
+      </footer>
     </div>
   );
 }

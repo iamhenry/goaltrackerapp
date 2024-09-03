@@ -67,11 +67,11 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-12">
       <Input
         value={goal}
         onChange={(e) => setGoal(e.target.value)}
-        placeholder="Enter your goal and due date..."
+        placeholder="Enter a goal and due date..."
         disabled={isGenerating}
         className="w-full border border-gray-200 rounded-md"
       />
