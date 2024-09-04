@@ -9,7 +9,7 @@ export function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <header className="flex justify-center items-center py-4 px-6 bg-white shadow-sm">
+    <header className="flex justify-center items-center py-8 px-6 bg-white">
       <div className="w-[780px] flex justify-between items-center">
         <div className="flex items-center">
           <svg

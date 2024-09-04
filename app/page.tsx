@@ -252,8 +252,8 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col pt-20 bg-gray-100 min-h-screen">
-      <div className="w-[780px] bg-white rounded-lg shadow-md p-6 mx-auto">
+    <div className="flex flex-col pt-20 bg-white min-h-screen">
+      <div className="w-[780px] bg-white rounded-lg p-6 mx-auto">
         {userState.tasks.length > 0 && (
           <>
             <div className="flex justify-between items-center mb-6">
@@ -324,7 +324,7 @@ export default function Home() {
                 <Button
                   key={goal}
                   variant="outline"
-                  className="flex justify-between items-center p-10 h-28 text-left text-lg font-medium bg-white border border-[#D9D9D9] rounded-[20px] hover:bg-gray-50 transition-colors"
+                  className="flex justify-between items-center p-10 h-28 text-left text-lg font-medium bg-white border border-[#e5e7eb] rounded-[20px] hover:bg-gray-50 transition-colors"
                   onClick={() => handleGoalSubmit(goal)}
                   disabled={loadingGoal !== null}
                 >

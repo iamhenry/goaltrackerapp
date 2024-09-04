@@ -68,16 +68,22 @@ const TodoGenerator: React.FC<TodoGeneratorProps> = ({ onNewTasks }) => {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-12">
-      <Input
-        value={goal}
-        onChange={(e) => setGoal(e.target.value)}
-        placeholder="Enter a goal and due date..."
-        disabled={isGenerating}
-        className="w-full border border-gray-200 rounded-md"
-      />
-      <Button type="submit" disabled={isGenerating} className="w-full">
-        {isGenerating ? "Generating..." : "Create Goal"}
-      </Button>
+      <div className="relative w-full">
+        <Input
+          value={goal}
+          onChange={(e) => setGoal(e.target.value)}
+          placeholder="Enter a goal and due date..."
+          disabled={isGenerating}
+          className="w-full border border-gray-200 rounded-full pr-32 h-14"
+        />
+        <Button
+          type="submit"
+          disabled={isGenerating}
+          className="absolute right-1 top-1 bottom-1 rounded-full h-12 px-4 bg-[#1921FF] hover:bg-[#1921FF]/90 text-white"
+        >
+          {isGenerating ? "Generating..." : "Create Goal"}
+        </Button>
+      </div>
     </form>
   );
 };
