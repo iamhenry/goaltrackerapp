@@ -97,12 +97,12 @@ const EmailModal: React.FC<EmailModalProps> = ({ isOpen, onClose }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="pr-24"
+                  className="pr-24 rounded-full"
                   disabled={isSubmitting}
                 />
                 <Button
                   type="submit"
-                  className="absolute right-0 top-0 bottom-0 rounded-l-none"
+                  className="absolute right-0 top-0 bottom-0 rounded-full bg-[#1921FF] hover:bg-[#1921FF]/90"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
