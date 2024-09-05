@@ -7,7 +7,7 @@ const karla = Karla({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Goal Tracker",
-  description: "Baby steps to completing your goals",
+  description: "Daily actions for completing your goals",
 };
 
 export default function RootLayout({
