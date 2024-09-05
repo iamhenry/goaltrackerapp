@@ -441,7 +441,7 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Follow @soyhenryxyz for updates to Goal Tracker
+          Ping me on X for new features @soyhenryxyz
         </a>
       </footer>
     </div>
