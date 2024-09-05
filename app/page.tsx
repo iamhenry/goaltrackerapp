@@ -48,6 +48,7 @@ export default function Home() {
   const [isEditingGoal, setIsEditingGoal] = useState(false); // Add this line
   const [editedGoalName, setEditedGoalName] = useState(userState.goalName);
   const [loadingGoal, setLoadingGoal] = useState<string | null>(null);
+  const [isGoalCreated, setIsGoalCreated] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
