@@ -17,6 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <script
+        src="https://beamanalytics.b-cdn.net/beam.min.js"
+        data-token="25f94ca0-d8d0-4909-8882-9fbdac847a2b"
+        async
+      ></script>
       <body className={karla.className}>
         <Header />
         {children}

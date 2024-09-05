@@ -4,6 +4,7 @@ import { Button } from "./button";
 import { Input } from "./input";
 import { Trash, GripVertical } from "lucide-react"; // Add GripVertical import
 import { TaskType } from "@/app/types/task";
+import { Groq } from "groq-sdk";
 
 interface TaskProps {
   task: TaskType;
